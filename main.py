@@ -1,5 +1,5 @@
 import threading
-from settings import Settings
+from ui.settings import Settings
 from game import Game
 
 # tkinters mainloop wont allow us to exec game logic
