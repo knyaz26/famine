@@ -1,5 +1,8 @@
 import pyray as pr
 import sqlite3 as sq
+import random
+from graphic.entities.colonist import Colonist
+from graphic.entities.food import Food
 
 class Ready():
     def __init__(self):
@@ -22,5 +25,20 @@ class Ready():
         """).fetchone()
         connection.close()
         return data
+
+    def spawn_colonists(self, ammount, charisma, health):
+        colonists = []
+        charisma = random.randint(0, charisma)
+        for i in range(ammount):
+            colonist = Colonist(i, charisma, health)
+            colonists.append(colonist)
+        return colonists
+
+    def spawn_food(self, ammount):
+        food_list = []
+        for i in range(ammount):
+            food = Food(i)
+            food_list.append(food)
+        return food_list
 
 ready = Ready()
