@@ -1,5 +1,6 @@
 import tkinter as tk
 import sqlite3 as sq
+from ui.dashboard import dashboard
 
 class Settings():
     def __init__(self):
@@ -69,6 +70,7 @@ class Settings():
     def exit(self):
         if self.root:
             self.root.destroy()
+            dashboard.enter()
 
 
     def on_click(self):
@@ -97,9 +99,9 @@ class Settings():
                 "INSERT INTO settings VALUES (?, ?, ?, ?, ?, ?);",
                 tuple(map(int, data))
             )
-            
             connection.commit()
             connection.close()
+            self.exit()
             
         self.start_text.config(state="disabled")
 
