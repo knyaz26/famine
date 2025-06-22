@@ -1,4 +1,5 @@
 import tkinter as tk
+import sqlite3 as sq
 
 class Settings():
     def __init__(self):
@@ -72,8 +73,10 @@ class Settings():
 
     def on_click(self):
         error_msg = ""
+        data = []
         for i in range(len(self._widgets)):
             raw = self._widgets[i][2].get()
+            data.append(raw)
             label = self._widgets[i][0].cget("text")
             try:
                 val = int(raw)
@@ -87,6 +90,17 @@ class Settings():
         self.start_text.config(state="normal")
         self.start_text.delete("1.0", "end")
         self.start_text.insert("1.0", error_msg if error_msg else "launching...")
+        if not error_msg:
+            connection = sq.connect('database/famine_db')
+            cursor = connection.cursor()
+            cursor.execute(
+                "INSERT INTO settings VALUES (?, ?, ?, ?, ?, ?);",
+                tuple(map(int, data))
+            )
+            
+            connection.commit()
+            connection.close()
+            
         self.start_text.config(state="disabled")
 
 
