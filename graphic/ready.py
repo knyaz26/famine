@@ -28,16 +28,18 @@ class Ready():
 
     def spawn_colonists(self, ammount, charisma, health):
         colonists = []
+        sprite = pr.load_texture("assets/human.png")
         charisma = random.randint(0, charisma)
         for i in range(ammount):
-            colonist = Colonist(i, charisma, health)
+            colonist = Colonist(i,sprite, charisma, health)
             colonists.append(colonist)
         return colonists
 
     def spawn_food(self, ammount):
+        sprite = pr.load_texture("assets/food.png")
         food_list = []
         for i in range(ammount):
-            food = Food(i)
+            food = Food(i, sprite)
             food_list.append(food)
         return food_list
 
