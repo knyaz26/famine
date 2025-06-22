@@ -19,14 +19,22 @@ class Dashboard():
 
         self.notebook = ttk.Notebook(self.root)
 
+        self.stats_tab = tk.Frame(self.notebook)
+        self.history_tab = tk.Frame(self.notebook)
+        self.details_tab = tk.Frame(self.notebook)
         self.info_tab = tk.Frame(self.notebook)
 
+        self.notebook.add(self.stats_tab, text="Statistics")
+        self.notebook.add(self.history_tab, text="History")
+        self.notebook.add(self.details_tab, text="Details")
         self.notebook.add(self.info_tab, text="Info")
 
         self.notebook.pack(expand=True, fill="both")
 
-        self.info_text = tk.Label(self.info_tab, text="hehehe")
-        self.info_text.pack()
+        self.build_stats_tab()
+        self.build_history_tab()
+        self.build_details_tab()
+        self.build_info_tab()
 
         self.root.after(100, self.update)
         self.root.mainloop()
@@ -38,4 +46,32 @@ class Dashboard():
         if self.root:
             self.root.destroy()
 
+    def build_stats_tab(self):
+        pass
+
+    def build_history_tab(self):
+        pass
+
+    def build_details_tab(self):
+        pass
+
+    def build_info_tab(self):
+        self.info_text = tk.Label(self.info_tab, font=(16), text=
+"""
+FAMINE: THE SOCIAL SURVIVAL SIMULATOR
+
+In a world where food runs low and greed runs high, 100 colonists must fight to survive.
+
+— Every day, food drops randomly on the field.
+— Colonists collect and consume food to stay alive.
+— Extra food boosts their charisma. Greed pays....
+— Every 7 days, the most charismatic colonist is voted out.
+— Starve for 5 days, and you're dead.
+
+Outwit, outlive, and outlast. Last one standing wins.
+
+This simulator was inspired by primers YouTube channel.
+""")
+        self.info_text.pack()
+        
 dashboard = Dashboard()
