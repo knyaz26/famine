@@ -11,9 +11,11 @@ class Colonist():
         self.health = health
         self.src = pr.Rectangle(0, 0, self.sprite.width, self.sprite.height)
         self.origin = pr.Vector2(self.sprite.width // 2, self.sprite.height)
+        self.target = None
 
     def update(self):
         self.rect = pr.Rectangle(self.pos_x, self.pos_y, self.sprite.width * 2, self.sprite.height * 2)
+        print(self.target)
         
 
     def draw(self):
