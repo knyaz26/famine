@@ -30,7 +30,6 @@ class Colonist():
 
     def move_towards(self):
         if self.target:
-            print("moving toward", self.target.pos_x, self.target.pos_y)
             
             pos1 = (self.pos_x, self.pos_y)
             pos2 = (self.target.pos_x, self.target.pos_y)

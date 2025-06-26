@@ -15,6 +15,7 @@ class Game:
         while not pr.window_should_close() and self.running:
             update.update_colonists(colonists)
             update.update_food(food_list)
+            food_list = update.return_collisions(colonists, food_list)
             update.update_targets(colonists, food_list)
             pr.begin_drawing()
             pr.clear_background(pr.RAYWHITE)
