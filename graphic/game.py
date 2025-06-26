@@ -1,6 +1,7 @@
 import pyray as pr
 from graphic.ready import ready
 from graphic.update import update
+from graphic.mediator import mediator
 
 class Game:
     def __init__(self):
@@ -15,7 +16,7 @@ class Game:
         ready.start_window()
         colonists = ready.spawn_colonists(self.settings_data[0], self.settings_data[4], self.settings_data[3])
         food_list = ready.spawn_food(self.food)
-
+        mediator.build_tree(colonists, food_list)
         while not pr.window_should_close() and self.running:
             update.update_colonists(colonists)
             update.update_food(food_list)
@@ -28,7 +29,6 @@ class Game:
                 food_list = ready.spawn_food(self.food)
                 update.update_food(food_list)
             update.check_election(self.vote_intervals, self.day, colonists)
-            update.update_targets(colonists, food_list)
             pr.begin_drawing()
             pr.clear_background(pr.RAYWHITE)
             update.draw_food(food_list)

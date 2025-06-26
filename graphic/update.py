@@ -25,9 +25,6 @@ class Update():
         for i in food_list:
             i.draw()
 
-    def update_targets(self, colonists, food_list):
-        mediator.build_tree(colonists, food_list)
-
     def return_collisions(self, colonists, food_list):
         for i in colonists:
             for j in food_list:
@@ -36,6 +33,7 @@ class Update():
                     self.insert_sql(event)
                     self.feed_colonist(i)
                     food_list.remove(j)
+                    mediator.build_tree(colonists, food_list)
         return food_list
 
     def insert_sql(self, event):
