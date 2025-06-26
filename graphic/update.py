@@ -30,18 +30,28 @@ class Update():
             for j in food_list:
                 if pr.check_collision_recs(i.rect, j.rect):
                     event = f"{i.name} collected food."
-                    self.insert_sql(event)
+                    self.sql_insert_events(event)
                     self.feed_colonist(i)
                     food_list.remove(j)
                     mediator.build_tree(colonists, food_list)
         return food_list
 
-    def insert_sql(self, event):
+    def sql_insert_events(self, event):
         connect = sq.connect("database/famine_db")
         cursor = connect.cursor()
         cursor.execute("""
             insert into events (event) values (?)
         """, (event,))
+        connect.commit()
+        connect.close()
+    
+    def sql_insert_dashboard_data(self, days, charisma, stockpile, population, knocked_down, food_left):
+        connect = sq.connect("database/famine_db")
+        cursor = connect.cursor()
+        cursor.execute("""
+            insert into dashboard_data (days, charisma, stockpile, population, knocked_down, food_left)
+            values (?, ?, ?, ?, ?, ?)
+        """, (days, charisma, stockpile, population, knocked_down, food_left))
         connect.commit()
         connect.close()
 
@@ -50,14 +60,22 @@ class Update():
         colonist.charisma -= 1
         
 
-    def check_food(self, colonists, food_list):
+    def end_day(self, colonists, food_list, days, food):
         if not food_list and colonists:
+            charisma = 0
+            stockpile = 0
+            knocked_down = 0
+            population = len(colonists)
+            food_left = food
             for i in colonists:
                 i.eat()
+                charisma += i.charisma
+                stockpile += i.stockpile
+                knocked_down += 1 if i.knocked_down else 0
             event = "day has passed..."
-            self.insert_sql(event)
-            for i in colonists:
-                i.knocked_down = False
+            self.sql_insert_events(event)
+            self.sql_insert_dashboard_data(days, charisma, stockpile, population, knocked_down, food_left)
+            self.revive_knocked_colonists(colonists)
             return True
         return False
 
@@ -68,7 +86,7 @@ class Update():
                 return
             if i.dead:
                 event = f"{i.name} has died."
-                self.insert_sql(event)
+                self.sql_insert_events(event)
                 colonists.remove(i)
         return colonists
 
@@ -80,12 +98,12 @@ class Update():
                 if i.charisma < lowest.charisma:
                     lowest = i
             event = f"{lowest.name} was voted out."
-            self.insert_sql(event)
+            self.sql_insert_events(event)
             lowest.die()
 
     def winner(self, winner):
         event = f"{winner.name} has survived the onslought"
-        self.insert_sql(event)
+        self.sql_insert_events(event)
         self.game_over = True
 
     def is_game_over(self):
@@ -101,6 +119,9 @@ class Update():
                         else:
                             colonists[i].knocked_down = True
         
+    def revive_knocked_colonists(self, colonists):
+        for i in colonists:
+            i.knocked_down = False
 
 
 update = Update()

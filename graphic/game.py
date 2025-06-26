@@ -23,7 +23,7 @@ class Game:
             food_list = update.return_collisions(colonists, food_list)
             colonists = update.kill_off_starved(colonists)
             update.check_colonist_collisions(colonists)
-            day_passed = update.check_food(colonists, food_list)
+            day_passed = update.end_day(colonists, food_list, self.day, self.food)
             if day_passed:
                 self.day += 1
                 self.food -= self.decay

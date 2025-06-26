@@ -6,6 +6,7 @@ cursor = connection.cursor()
 cursor.executescript("""
         delete from settings;
         delete from events;
+        delete from dashboard_data;
     """)
 connection.commit()
 connection.close()
