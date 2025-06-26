@@ -18,6 +18,8 @@ class Colonist():
         self.origin = pr.Vector2(self.sprite.width // 2, self.sprite.height)
         self.target = None
         self.speed = random.randint(10, 13) / 10
+        self.strength = random.random()
+        self.knocked_down = False
         self.dead = False
 
     def update(self):
@@ -35,7 +37,7 @@ class Colonist():
         )
 
     def move_towards(self):
-        if self.target:
+        if self.target and not self.knocked_down:
             
             pos1 = (self.pos_x, self.pos_y)
             pos2 = (self.target.pos_x, self.target.pos_y)

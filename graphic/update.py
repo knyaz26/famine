@@ -50,12 +50,14 @@ class Update():
         colonist.charisma -= 1
         
 
-    def check_food(self,colonists, food_list):
+    def check_food(self, colonists, food_list):
         if not food_list and colonists:
             for i in colonists:
                 i.eat()
             event = "day has passed..."
             self.insert_sql(event)
+            for i in colonists:
+                i.knocked_down = False
             return True
         return False
 
@@ -88,6 +90,16 @@ class Update():
 
     def is_game_over(self):
         return False if self.game_over else True
+
+    def check_colonist_collisions(self, colonists):
+        if colonists:
+            for i in range(len(colonists)):
+                for j in range(i + 1, len(colonists)):
+                    if pr.check_collision_recs(colonists[i].rect, colonists[j].rect):
+                        if colonists[i].strength > colonists[j].strength:
+                            colonists[j].knocked_down = True
+                        else:
+                            colonists[i].knocked_down = True
         
 
 
