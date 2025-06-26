@@ -7,6 +7,7 @@ class Game:
         self.running = True
         self.settings_data = ready.load_sql()
         self.food = self.settings_data[1]
+        self.decay = self.settings_data[2]
         self.vote_intervals = self.settings_data[5]
         self.day = 1
 
@@ -20,7 +21,12 @@ class Game:
             update.update_food(food_list)
             food_list = update.return_collisions(colonists, food_list)
             colonists = update.kill_off_starved(colonists)
-            self.day += update.check_food(colonists, food_list)
+            day_passed = update.check_food(colonists, food_list)
+            if day_passed:
+                self.day += 1
+                self.food -= self.decay
+                food_list = ready.spawn_food(self.food)
+                update.update_food(food_list)
             update.check_election(self.vote_intervals, self.day, colonists)
             update.update_targets(colonists, food_list)
             pr.begin_drawing()

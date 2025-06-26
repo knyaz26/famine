@@ -17,7 +17,7 @@ class Colonist():
         self.src = pr.Rectangle(0, 0, self.sprite.width, self.sprite.height)
         self.origin = pr.Vector2(self.sprite.width // 2, self.sprite.height)
         self.target = None
-        self.speed = 0.5
+        self.speed = random.randint(10, 13) / 10
         self.dead = False
 
     def update(self):

@@ -55,13 +55,13 @@ class Update():
                 i.eat()
             event = "day has passed..."
             self.insert_sql(event)
-            return 1
-        return 0
+            return True
+        return False
 
     def kill_off_starved(self, colonists):
         for i in colonists:
             if i.dead:
-                event = f"{i.name} has starved to death"
+                event = f"{i.name} has died."
                 self.insert_sql(event)
                 colonists.remove(i)
         return colonists
@@ -75,6 +75,6 @@ class Update():
             event = f"{lowest.name} was voted out."
             self.insert_sql(event)
             lowest.die()
-        
+
 
 update = Update()
