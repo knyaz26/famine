@@ -4,7 +4,7 @@ from graphic.mediator import mediator
 
 class Update():
     def __init__(self):
-        pass
+        self.last_vote_day = -1
 
     def update_colonists(self, colonists):
         for i in colonists:
@@ -50,7 +50,7 @@ class Update():
         
 
     def check_food(self,colonists, food_list):
-        if not food_list:
+        if not food_list and colonists:
             for i in colonists:
                 i.eat()
             event = "day has passed..."
@@ -67,7 +67,8 @@ class Update():
         return colonists
 
     def check_election(self, vote_intervals, day, colonists):
-        if day % vote_intervals == 0 and colonists:
+        if day % vote_intervals == 0 and colonists and day != self.last_vote_day:
+            self.last_vote_day = day
             lowest = colonists[0]
             for i in colonists:
                 if i.charisma < lowest.charisma:
