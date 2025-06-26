@@ -1,5 +1,15 @@
+import sqlite3 as sql
 from ui.settings import Settings
 
-# tkinters mainloop wont allow us to exec game logic
+connection = sql.connect("database/famine_db")
+cursor = connection.cursor()
+cursor.executescript("""
+        delete from settings;
+        delete from events;
+    """)
+connection.commit()
+connection.close()
+
 settings = Settings()
 settings.enter()
+

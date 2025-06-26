@@ -1,4 +1,5 @@
 import pyray as pr
+import sqlite3 as sq
 from graphic.mediator import mediator
 
 class Update():
@@ -28,7 +29,22 @@ class Update():
         for i in colonists:
             for j in food_list:
                 if pr.check_collision_recs(i.rect, j.rect):
+                    event = f"{i.name} collected food."
+                    self.insert_sql(event)
+                    # food up
+                    # charisma down
                     food_list.remove(j)
         return food_list
+
+    def insert_sql(self, event):
+        connect = sq.connect("database/famine_db")
+        cursor = connect.cursor()
+        cursor.execute("""
+            insert into events (event) values (?)
+        """, (event,))
+        connect.commit()
+        connect.close()
+
+    
 
 update = Update()

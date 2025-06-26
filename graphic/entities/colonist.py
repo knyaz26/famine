@@ -1,9 +1,13 @@
 import pyray as pr
 import random
+import names
+
+names_list = [names.get_full_name() for _ in range(100)]
 
 class Colonist():
     def __init__(self, id, sprite, charisma, health):
         self.id = id
+        self.name = random.choice(names_list)
         self.sprite = sprite
         self.pos_x = random.randint(0, 800)
         self.pos_y = random.randint(0, 600)
