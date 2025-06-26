@@ -57,21 +57,21 @@ class Dashboard():
 
     def build_info_tab(self):
         self.info_text = tk.Label(self.info_tab, font=(16), text=
-"""
-FAMINE: THE SOCIAL SURVIVAL SIMULATOR
+            """
+            FAMINE: THE SOCIAL SURVIVAL SIMULATOR
 
-In a world where food runs low and greed runs high, 100 colonists must fight to survive.
+            In a world where food runs low and greed runs high, 100 colonists must fight to survive.
 
-— Every day, food drops randomly on the field.
-— Colonists collect and consume food to stay alive.
-— Extra food boosts their charisma. Greed pays....
-— Every 7 days, the most charismatic colonist is voted out.
-— Starve for 5 days, and you're dead.
+            — Every day, food drops randomly on the field.
+            — Colonists collect and consume food to stay alive.
+            — Extra food boosts their charisma. Greed pays....
+            — Every 7 days, the most charismatic colonist is voted out.
+            — Starve for 5 days, and you're dead.
 
-Outwit, outlive, and outlast. Last one standing wins.
+            Outwit, outlive, and outlast. Last one standing wins.
 
-This simulator was inspired by primers YouTube channel.
-""")
+            This simulator was inspired by primers YouTube channel.
+            """)
         self.info_text.pack()
         
 dashboard = Dashboard()

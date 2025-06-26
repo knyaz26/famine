@@ -5,17 +5,23 @@ from graphic.update import update
 class Game:
     def __init__(self):
         self.running = True
+        self.settings_data = ready.load_sql()
+        self.food = self.settings_data[1]
+        self.vote_intervals = self.settings_data[5]
+        self.day = 1
 
     def run(self):
         ready.start_window()
-        settings_data = ready.load_sql()
-        colonists = ready.spawn_colonists(settings_data[0], settings_data[4], settings_data[3])
-        food_list = ready.spawn_food(settings_data[1])
+        colonists = ready.spawn_colonists(self.settings_data[0], self.settings_data[4], self.settings_data[3])
+        food_list = ready.spawn_food(self.food)
 
         while not pr.window_should_close() and self.running:
             update.update_colonists(colonists)
             update.update_food(food_list)
             food_list = update.return_collisions(colonists, food_list)
+            colonists = update.kill_off_starved(colonists)
+            self.day += update.check_food(colonists, food_list)
+            update.check_election(self.vote_intervals, self.day, colonists)
             update.update_targets(colonists, food_list)
             pr.begin_drawing()
             pr.clear_background(pr.RAYWHITE)

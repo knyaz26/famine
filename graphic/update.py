@@ -31,8 +31,7 @@ class Update():
                 if pr.check_collision_recs(i.rect, j.rect):
                     event = f"{i.name} collected food."
                     self.insert_sql(event)
-                    # food up
-                    # charisma down
+                    self.feed_colonist(i)
                     food_list.remove(j)
         return food_list
 
@@ -45,6 +44,37 @@ class Update():
         connect.commit()
         connect.close()
 
-    
+    def feed_colonist(self, colonist):
+        colonist.stockpile += 1
+        colonist.charisma -= 1
+        
+
+    def check_food(self,colonists, food_list):
+        if not food_list:
+            for i in colonists:
+                i.eat()
+            event = "day has passed..."
+            self.insert_sql(event)
+            return 1
+        return 0
+
+    def kill_off_starved(self, colonists):
+        for i in colonists:
+            if i.dead:
+                event = f"{i.name} has starved to death"
+                self.insert_sql(event)
+                colonists.remove(i)
+        return colonists
+
+    def check_election(self, vote_intervals, day, colonists):
+        if day % vote_intervals == 0 and colonists:
+            lowest = colonists[0]
+            for i in colonists:
+                if i.charisma < lowest.charisma:
+                    lowest = i
+            event = f"{lowest.name} was voted out."
+            self.insert_sql(event)
+            lowest.die()
+        
 
 update = Update()

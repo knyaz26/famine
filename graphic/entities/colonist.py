@@ -12,11 +12,13 @@ class Colonist():
         self.pos_x = random.randint(0, 800)
         self.pos_y = random.randint(0, 600)
         self.charisma = charisma
+        self.stockpile = 0
         self.health = health
         self.src = pr.Rectangle(0, 0, self.sprite.width, self.sprite.height)
         self.origin = pr.Vector2(self.sprite.width // 2, self.sprite.height)
         self.target = None
         self.speed = 0.5
+        self.dead = False
 
     def update(self):
         self.move_towards()
@@ -49,3 +51,15 @@ class Colonist():
 
     def update_rectangle(self):
         self.rect = pr.Rectangle(self.pos_x, self.pos_y, self.sprite.width * 2, self.sprite.height * 2)
+
+    def eat(self):
+        if self.stockpile > 0:
+            self.stockpile -= 1
+        elif self.health > 0:
+            self.health -= 1
+        else:
+            self.die()
+
+    def die(self):
+        self.dead = True
+        
