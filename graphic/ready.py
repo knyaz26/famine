@@ -9,6 +9,7 @@ class Ready():
         pass
 
     def start_window(self):
+        pr.set_trace_log_level(pr.LOG_NONE)
         pr.init_window(800, 600, "Famine")
         pr.set_target_fps(60)
         # pr.set_window_icon()
