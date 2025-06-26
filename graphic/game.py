@@ -34,6 +34,7 @@ class Game:
             update.draw_food(food_list)
             update.draw_colonists(colonists)
             pr.end_drawing()
+            self.running = update.is_game_over()
 
         pr.close_window()
 

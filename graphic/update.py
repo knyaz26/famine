@@ -5,14 +5,17 @@ from graphic.mediator import mediator
 class Update():
     def __init__(self):
         self.last_vote_day = -1
+        self.game_over = False
 
     def update_colonists(self, colonists):
-        for i in colonists:
-            i.update()
+        if colonists:
+            for i in colonists:
+                i.update()
 
     def draw_colonists(self, colonists):
-        for i in colonists:
-            i.draw()
+        if colonists:
+            for i in colonists:
+                i.draw()
 
     def update_food(self, food_list):
         for i in food_list:
@@ -60,6 +63,9 @@ class Update():
 
     def kill_off_starved(self, colonists):
         for i in colonists:
+            if len(colonists) <= 1:
+                self.winner(i)
+                return
             if i.dead:
                 event = f"{i.name} has died."
                 self.insert_sql(event)
@@ -69,13 +75,22 @@ class Update():
     def check_election(self, vote_intervals, day, colonists):
         if day % vote_intervals == 0 and colonists and day != self.last_vote_day:
             self.last_vote_day = day
-            lowest = colonists[0]
+            lowest =colonists[0]
             for i in colonists:
                 if i.charisma < lowest.charisma:
                     lowest = i
             event = f"{lowest.name} was voted out."
             self.insert_sql(event)
             lowest.die()
+
+    def winner(self, winner):
+        event = f"{winner.name} has survived the onslought"
+        self.insert_sql(event)
+        self.game_over = True
+
+    def is_game_over(self):
+        return False if self.game_over else True
+        
 
 
 update = Update()
