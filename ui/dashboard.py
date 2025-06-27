@@ -46,10 +46,6 @@ class Dashboard():
         self.root.mainloop()
 
     def update(self):
-        if not self.game.running:
-            self.exit
-            return
-        
         if self.root.winfo_exists():
             connection = sqlite3.connect("database/famine_db")
             cursor = connection.cursor()
@@ -60,6 +56,7 @@ class Dashboard():
             if result and result[0] is not None and result[0] != self.last_day:
                 self.last_day = result[0]
                 self.refresh_stats_tab()
+                self.refresh_history_tab()
 
             self.root.after(1000, self.update)
 
@@ -112,7 +109,37 @@ class Dashboard():
         self.canvas.draw()
 
     def build_history_tab(self):
-        pass
+        frame = tk.Frame(self.history_tab)
+        frame.pack(fill=tk.BOTH, expand=True)
+
+        scrollbar = tk.Scrollbar(frame)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.event_list_box = tk.Listbox(
+            frame,
+            yscrollcommand=scrollbar.set,
+            selectmode=tk.NONE,
+            font=("Helvetica", 14)
+        )
+        self.event_list_box.pack(fill=tk.BOTH, expand=True)
+
+        scrollbar.config(command=self.event_list_box.yview)
+
+    def refresh_history_tab(self):
+        connection = sqlite3.connect("database/famine_db")
+        cursor = connection.cursor()
+        cursor.execute("select event from events order by rowid desc;")
+        rows = cursor.fetchall()
+        connection.close()
+
+        self.event_list_box.delete(0, tk.END)
+        for i, row in enumerate(rows):
+            self.event_list_box.insert(tk.END, row[0])
+            if i % 2 == 0:
+                self.event_list_box.itemconfig(i, bg="white")
+            else:
+                self.event_list_box.itemconfig(i, bg="#e6f0ff")
+
 
     def build_details_tab(self):
         pass
@@ -122,19 +149,19 @@ class Dashboard():
             """
             FAMINE: THE SOCIAL SURVIVAL SIMULATOR
 
-            In a world where food runs low and greed runs high, 100 colonists must fight to survive.
+            100 colonists have to compete to survive in an environment where food
+            becomes scarser every day and greed more rampant.
 
-            — Every day, food drops randomly on the field.
-            — Colonists collect and consume food to stay alive.
-            — Extra food boosts their charisma. Greed pays....
-            — Every 7 days, the most charismatic colonist is voted out.
-            — Starve for 5 days, and you're dead.
+            - Every day, food drops randomly on the field.
+            - Colonists collect and consume food to stay alive.
+            - Extra food lovers charisma.
+            - Every election day, the least charismatic colonist is voted out.
+            - Fail to forage food and you starve.
 
-            Outwit, outlive, and outlast. Last one standing wins.
+            Last colonist standing wins.
 
             This simulator was inspired by primers YouTube channel.
             """)
         self.info_text.pack()
 
 dashboard = Dashboard()
-
