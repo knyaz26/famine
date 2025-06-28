@@ -18,6 +18,7 @@ class Game:
         food_list = ready.spawn_food(self.food)
         mediator.build_tree(colonists, food_list)
         while not pr.window_should_close() and self.running:
+            pr.draw_fps(10, 10)
             update.update_colonists(colonists)
             update.update_food(food_list)
             food_list = update.return_collisions(colonists, food_list)
@@ -31,7 +32,7 @@ class Game:
                 update.update_food(food_list)
             update.check_election(self.vote_intervals, self.day, colonists)
             pr.begin_drawing()
-            pr.clear_background(pr.RAYWHITE)
+            pr.clear_background(pr.DARKGREEN)
             update.draw_food(food_list)
             update.draw_colonists(colonists)
             pr.end_drawing()

@@ -55,6 +55,19 @@ class Update():
         connect.commit()
         connect.close()
 
+    def sql_insert_colonists(self, name, charisma, stockpile, health, strength, knocked_down):
+        connect = sq.connect("database/famine_db")
+        cursor = connect.cursor()
+        cursor.execute("""
+            delete from colonists;
+        """)
+        cursor.execute("""
+            insert into colonists(name, charisma, stockpile, health, strength, knocked_down)
+            values (?, ?, ?, ? , ?, ?)
+        """,(name, charisma, stockpile, health, strength, knocked_down))
+        connect.commit()
+        connect.close()
+
     def feed_colonist(self, colonist):
         colonist.stockpile += 1
         colonist.charisma -= 1
@@ -68,6 +81,7 @@ class Update():
             population = len(colonists)
             food_left = food
             for i in colonists:
+                self.sql_insert_colonists(i.name, i.charisma, i.stockpile, i.health, i.strength, i.knocked_down)
                 i.eat()
                 charisma += i.charisma
                 stockpile += i.stockpile

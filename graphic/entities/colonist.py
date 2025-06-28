@@ -29,7 +29,8 @@ class Colonist():
     def update(self):
         self.move_towards()
         self.update_rectangle()
-        self.shake()
+        if not self.knocked_down:
+            self.shake()
 
     def shake(self):
         self.shake_offset += 0.3 * self.shake_direction
