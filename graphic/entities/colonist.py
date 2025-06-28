@@ -21,30 +21,42 @@ class Colonist():
         self.strength = random.random()
         self.knocked_down = False
         self.dead = False
+        self.shake_offset = 0
+        self.shake_direction = 1
+        self.tilt = 0
+        self.tilt_direction = 1
 
     def update(self):
         self.move_towards()
         self.update_rectangle()
+        self.shake()
+
+    def shake(self):
+        self.shake_offset += 0.3 * self.shake_direction
+        if abs(self.shake_offset) > 3:
+            self.shake_direction *= -1
+        self.tilt += 0.5 * self.tilt_direction
+        if abs(self.tilt) > 5:
+            self.tilt_direction *= -1
 
     def draw(self):
         pr.draw_texture_pro(
             self.sprite,
             self.src,
-            self.rect,
+            pr.Rectangle(self.pos_x, self.pos_y + self.shake_offset, self.sprite.width * 2, self.sprite.height * 2),
             self.origin,
-            0,
+            self.tilt,
             pr.WHITE
         )
 
     def move_towards(self):
         if self.target and not self.knocked_down:
-            
             pos1 = (self.pos_x, self.pos_y)
             pos2 = (self.target.pos_x, self.target.pos_y)
             dx = pos2[0] - pos1[0]
             dy = pos2[1] - pos1[1]
             dist = (dx**2 + dy**2) ** 0.5
-            if dist==0:
+            if dist == 0:
                 return
             nx, ny = dx / dist, dy / dist
             move_dist = min(self.speed, dist)
@@ -64,4 +76,4 @@ class Colonist():
 
     def die(self):
         self.dead = True
-        
+     
