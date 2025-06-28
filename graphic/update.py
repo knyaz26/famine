@@ -136,11 +136,16 @@ class Update():
                 for j in range(i + 1, len(colonists)):
                     if pr.check_collision_recs(colonists[i].rect, colonists[j].rect):
                         if colonists[i].strength > colonists[j].strength:
-                            if not colonists[i].knocked_down:
-                                colonists[j].knocked_down = True
-                        else:
                             if not colonists[j].knocked_down:
+                                colonists[j].knocked_down = True
+                                event = f"{colonists[i].name} has knocked down {colonists[j].name}."
+                                self.sql_insert_events(event)
+                        else:
+                            if not colonists[i].knocked_down:
                                 colonists[i].knocked_down = True
+                                event = f"{colonists[j].name} has knocked down {colonists[i].name}."
+                                self.sql_insert_events(event)
+
         
     def revive_knocked_colonists(self, colonists):
         for i in colonists:

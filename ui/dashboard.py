@@ -142,21 +142,33 @@ class Dashboard():
                 self.event_list_box.itemconfig(i, bg="#e6f0ff")
 
     def build_details_tab(self):
+        import tkinter.ttk as ttk
+
         frame = tk.Frame(self.details_tab)
         frame.pack(fill=tk.BOTH, expand=True)
 
-        scrollbar = tk.Scrollbar(frame)
+        columns = ("name", "charisma", "stockpile", "health", "strength", "knocked")
+        self.details_tree = ttk.Treeview(frame, columns=columns, show="headings")
+        self.details_tree.pack(fill=tk.BOTH, expand=True)
+
+        scrollbar = tk.Scrollbar(frame, command=self.details_tree.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.details_tree.configure(yscrollcommand=scrollbar.set)
 
-        self.details_list_box = tk.Listbox(
-            frame,
-            yscrollcommand=scrollbar.set,
-            selectmode=tk.NONE,
-            font=("Helvetica", 14)
-        )
-        self.details_list_box.pack(fill=tk.BOTH, expand=True)
+        # Set headings and column widths
+        self.details_tree.heading("name", text="Name")
+        self.details_tree.heading("charisma", text="Charisma")
+        self.details_tree.heading("stockpile", text="Stockpile")
+        self.details_tree.heading("health", text="Health")
+        self.details_tree.heading("strength", text="Strength")
+        self.details_tree.heading("knocked", text="Knocked")
 
-        scrollbar.config(command=self.details_list_box.yview)
+        self.details_tree.column("name", width=150, anchor="w")
+        self.details_tree.column("charisma", width=80, anchor="center")
+        self.details_tree.column("stockpile", width=80, anchor="center")
+        self.details_tree.column("health", width=80, anchor="center")
+        self.details_tree.column("strength", width=80, anchor="center")
+        self.details_tree.column("knocked", width=80, anchor="center")
 
     def refresh_details_tab(self):
         connection = sqlite3.connect("database/famine_db")
@@ -165,13 +177,15 @@ class Dashboard():
         rows = cursor.fetchall()
         connection.close()
 
-        self.details_list_box.delete(0, tk.END)
+        self.details_tree.delete(*self.details_tree.get_children())
+
         for i, row in enumerate(rows):
-            self.details_list_box.insert(tk.END, f"{row[0]} | charisma:{row[1]} | stockpile:{row[2]} | health:{row[3]} | strength:{row[4]:.2f} | knocked:{row[5]}")
-            if i % 2 == 0:
-                self.details_list_box.itemconfig(i, bg="white")
-            else:
-                self.details_list_box.itemconfig(i, bg="#e6f0ff")
+            self.details_tree.insert("", tk.END, values=(row[0], row[1], row[2], row[3], f"{row[4]:.2f}", row[5]))
+
+
+
+
+
 
     def build_info_tab(self):
         self.info_text = tk.Label(self.info_tab, font=(16), text=
