@@ -57,6 +57,7 @@ class Dashboard():
                 self.last_day = result[0]
                 self.refresh_stats_tab()
                 self.refresh_history_tab()
+                self.refresh_details_tab()
 
             self.root.after(1000, self.update)
 
@@ -140,9 +141,37 @@ class Dashboard():
             else:
                 self.event_list_box.itemconfig(i, bg="#e6f0ff")
 
-
     def build_details_tab(self):
-        pass
+        frame = tk.Frame(self.details_tab)
+        frame.pack(fill=tk.BOTH, expand=True)
+
+        scrollbar = tk.Scrollbar(frame)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.details_list_box = tk.Listbox(
+            frame,
+            yscrollcommand=scrollbar.set,
+            selectmode=tk.NONE,
+            font=("Helvetica", 14)
+        )
+        self.details_list_box.pack(fill=tk.BOTH, expand=True)
+
+        scrollbar.config(command=self.details_list_box.yview)
+
+    def refresh_details_tab(self):
+        connection = sqlite3.connect("database/famine_db")
+        cursor = connection.cursor()
+        cursor.execute("select name, charisma, stockpile, health, strength, knocked_down from colonists order by rowid desc;")
+        rows = cursor.fetchall()
+        connection.close()
+
+        self.details_list_box.delete(0, tk.END)
+        for i, row in enumerate(rows):
+            self.details_list_box.insert(tk.END, f"{row[0]} | charisma:{row[1]} | stockpile:{row[2]} | health:{row[3]} | strength:{row[4]:.2f} | knocked:{row[5]}")
+            if i % 2 == 0:
+                self.details_list_box.itemconfig(i, bg="white")
+            else:
+                self.details_list_box.itemconfig(i, bg="#e6f0ff")
 
     def build_info_tab(self):
         self.info_text = tk.Label(self.info_tab, font=(16), text=
@@ -156,6 +185,7 @@ class Dashboard():
             - Colonists collect and consume food to stay alive.
             - Extra food lovers charisma.
             - Every election day, the least charismatic colonist is voted out.
+            - Get close to someone and they will knock you down.
             - Fail to forage food and you starve.
 
             Last colonist standing wins.

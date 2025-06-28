@@ -55,12 +55,18 @@ class Update():
         connect.commit()
         connect.close()
 
-    def sql_insert_colonists(self, name, charisma, stockpile, health, strength, knocked_down):
+    def sql_delete_colonists(self):
         connect = sq.connect("database/famine_db")
         cursor = connect.cursor()
         cursor.execute("""
             delete from colonists;
         """)
+        connect.commit()
+        connect.close()
+
+    def sql_insert_colonists(self, name, charisma, stockpile, health, strength, knocked_down):
+        connect = sq.connect("database/famine_db")
+        cursor = connect.cursor()
         cursor.execute("""
             insert into colonists(name, charisma, stockpile, health, strength, knocked_down)
             values (?, ?, ?, ? , ?, ?)
@@ -75,6 +81,7 @@ class Update():
 
     def end_day(self, colonists, food_list, days, food):
         if not food_list and colonists:
+            self.sql_delete_colonists()
             charisma = 0
             stockpile = 0
             knocked_down = 0
